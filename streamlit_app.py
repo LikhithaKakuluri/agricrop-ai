@@ -134,6 +134,13 @@ elif tabs == "🌾 Predict Crop Advice":
         sustainability_pred = sustainability_model.predict(X)[0]
         crop_pred_encoded = crop_model.predict(X)[0]
         crop_pred = label_encoder.inverse_transform([crop_pred_encoded])[0]
+        try:
+            if crop_pred_encoded >= len(label_encoder.classes_):
+                crop_pred = f"Unknown Crop (Code: {crop_pred_encoded})"
+            else:
+                crop_pred = label_encoder.inverse_transform([crop_pred_encoded])[0]
+        except (KeyError, IndexError, ValueError):
+            crop_pred = f"Unknown Crop (Code: {crop_pred_encoded})"
         price_estimate = round(yield_pred * 163.5, 2)
 
         irrigation_advice = "Use drip irrigation to conserve water." if soil_moisture < 40 else "Flood irrigation may be used."
